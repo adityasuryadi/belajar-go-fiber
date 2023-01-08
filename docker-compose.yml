@@ -1,0 +1,109 @@
+version: "3.9"
+services:
+  ### ===================
+  ### APP SERVICE
+  ### ===================
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: go_service
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    # depends_on:
+    #   - mongo
+    volumes:
+      - ./:/app/
+    networks:
+      - blog_network
+
+  ### ===================
+  ### DB SERVICE
+  ### ===================
+  mongodb:
+    build: 
+      dockerfile: mongo.Dockerfile
+      context: .
+    container_name: mongo_service
+    ports:
+      - ${DB_PORT}:27017
+    networks:
+      - blog_network
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes: 
+          - mongodata:/data/db
+
+###=======================
+### POSTGRES SERVICE
+###======================
+  postgres:
+
+    build:
+      dockerfile: postgres.Dockerfile
+      context: .
+    container_name: postgres_service
+    ports:
+      - 5433:5432
+    networks:
+      - blog_network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # - type: bind
+      #   source: ./docker/postgres
+      #   target: /var/lib/postgresql/data
+
+### ===================
+### RABBITMQ
+### ===================
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - rabbitmqdata:/var/lib/rabbitmq
+    networks:
+        - blog_network
+
+
+### ===================
+### SWAGGER SERVICE
+### ===================
+  doc:
+    build: 
+      context: .
+      dockerfile: swagger.Dockerfile
+    container_name: swagger_service
+    environment:
+      - URL=http://localhost:9090/API-SPEC.json
+      - SWAGGER_JSON=/API-SPEC.json
+    volumes:
+      - ./API-SPEC.json:/API-SPEC.json
+    ports:
+      - 9090:8080
+    networks:
+      - blog_network
+
+
+      
+  
+networks:
+  blog_network:
+    driver: bridge
+    external:
+      true
+volumes:
+  mongodata:
+  pgdata:
+  rabbitmqdata:
+    # external: true
+    
+
+      

@@ -1,0 +1,963 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+      "title":"BLOG API",
+      "version":"1.0"
+    },
+    "servers": [
+      {"url":"http://127.0.0.1:3001/api"}
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+              "security": [{
+                "bearerAuth":[]
+              }],
+              "tags": ["blog API"],
+              "description": "List all user",
+              "summary": "List All user",
+              "parameters": [],
+              "responses": {
+                "200": {
+                  "description": "Success get all Customers",
+                  "content": {
+                    "application/json":{
+                      "schema":{
+                        "type": "object",
+                        "properties": {
+                          "code":{
+                            "type": "number",
+                            "example":200
+                          },
+                          "status":{
+                            "type": "string",
+                            "example":"OK"
+                          },
+                          "data":{
+                            "type": "array",
+                            "example":[
+                              {
+                                "id":"47568467394683",
+                                "name":"Aditya",
+                                "user_name":"adit",
+                                "email":"adit@mail.com",
+                                "created_at":"2022-11-01T10:23:47.362Z"
+                              },
+                              {
+                                "id":"47568467394683",
+                                "name":"Aditya",
+                                "user_name":"adit",
+                                "email":"adit@mail.com",
+                                "created_at":"2022-11-01T10:23:47.362Z"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500":{
+                  "description": "Internal server error",
+                  "content": {
+                    "application/json":{
+                      "schema":{
+                        "type": "object",
+                        "properties": {
+                          "code":{
+                            "example":500,
+                            "type": "integer",
+                            "format": "number"
+                          },
+                          "status":{
+                            "example":"INTERNAL_SERVER_ERROR",
+                            "type": "string",
+                            "format": "string"
+                          },
+                          "data":{
+                            "type": "object",
+                            "example":null
+                          }
+                        }
+                      }
+                    }
+                  }
+                } 
+              }
+            },
+            "post":{
+              "security": [{
+                "bearerAuth":[]
+              }],
+              "tags": ["blog API"],
+              "description": "Create User",
+              "summary": "Create User",
+              "parameters": [],
+              "requestBody":{
+                "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "user_name":{
+                        "type": "string",
+                        "example":"adit",
+                        "description": "Username user"
+                      },
+                      "name":{
+                        "type": "string",
+                        "example":"Aditya",
+                        "description": "Nama User" 
+                      },
+                      "email":{
+                        "type": "string",
+                        "example":"adit@mail.com",
+                        "description": "Email User"
+                      },
+                      "password":{
+                        "type": "string",
+                        "example":"admin",
+                        "description": "Password User"
+                      },
+                      "address":{
+                        "type": "string",
+                        "example":"Jl MOh Toha",
+                        "description": "Alamat user"
+                      }
+                    },
+                    "required": ["user_name","name","email"]
+                  }
+                }
+                }
+              },"responses": {
+              "200":{
+                "description": "Succes Register",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "example":200,
+                          "type": "integer",
+                          "format": "number"
+                        },
+                        "status":{
+                          "example":"OK",
+                          "type": "string",
+                          "format": "string"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":{
+                            "id":"47568467394683",
+                            "name":"Aditya",
+                            "user_name":"adit",
+                            "email":"adit@mail.com",
+                            "created_at":"2022-11-01T10:23:47.362Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "400":{
+                "description": "Validasi",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "integer",
+                          "example":400
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"BAD_REQUEST"
+                        },
+                        "data":{
+                          "type": "array",
+                          "example":[
+                            {
+                              "field":"UserName",
+                              "message":"This field is required"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "500":{
+                "description": "Internal server error",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "example":500,
+                          "type": "integer",
+                          "format": "number"
+                        },
+                        "status":{
+                          "example":"INTERNAL_SERVER_ERROR",
+                          "type": "string",
+                          "format": "string"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":null
+                        }
+                      }
+                    }
+                  }
+                }
+              } 
+              }
+            }
+        },
+        "/users/{id}":{
+          "get":{
+            "security": [{
+              "bearerAuth":[]
+            }],
+            "tags": ["blog API"],
+            "description": "Get user by id",
+            "summary": "Get user by id",
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "User Id"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Success get user",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "number",
+                          "example":200
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"OK"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":
+                            {
+                              "id":"47568467394683",
+                              "name":"Aditya",
+                              "user_name":"adit",
+                              "email":"adit@mail.com",
+                              "created_at":"2022-11-01T10:23:47.362Z"
+                            }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "404": {
+                "description": "User Not Found",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "number",
+                          "example":404
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"NOT_FOUND"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":null        
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "500":{
+                "description": "Internal server error",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "example":500,
+                          "type": "integer",
+                          "format": "number"
+                        },
+                        "status":{
+                          "example":"INTERNAL_SERVER_ERROR",
+                          "type": "string",
+                          "format": "string"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":null
+                        }
+                      }
+                    }
+                  }
+                }
+              } 
+            }
+          },
+          "put":{
+            "security": [{
+              "CategoryAuth":[]
+            }],
+            "tags": ["blog API"],
+            "description": "Edit user by id",
+            "summary": "Edit user by id",
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "User Id"
+              }
+            ],
+            "requestBody":{
+              "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "name":{
+                      "type": "string",
+                      "example":"Aditya",
+                      "description": "Nama User" 
+                    },
+                    "address":{
+                      "type": "string",
+                      "example":"Jl MOh Toha",
+                      "description": "Alamat user"
+                    }
+                  },
+                  "required": ["name"]
+                }
+              }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Success Edit user",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "number",
+                          "example":200
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"OK"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":
+                            {
+                              "id":"47568467394683",
+                              "name":"Aditya",
+                              "user_name":"adit",
+                              "email":"adit@mail.com",
+                              "created_at":"2022-11-01T10:23:47.362Z"
+                            }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "400":{
+                "description": "Validasi",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "integer",
+                          "example":400
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"BAD_REQUEST"
+                        },
+                        "data":{
+                          "type": "array",
+                          "example":[
+                            {
+                              "field":"UserName",
+                              "message":"This field is required"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "404": {
+                "description": "User Not Found",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "number",
+                          "example":404
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"NOT_FOUND"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":null        
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "500":{
+                "description": "Internal server error",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "example":500,
+                          "type": "integer",
+                          "format": "number"
+                        },
+                        "status":{
+                          "example":"INTERNAL_SERVER_ERROR",
+                          "type": "string",
+                          "format": "string"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":null
+                        }
+                      }
+                    }
+                  }
+                }
+              } 
+            }
+          },
+          "delete":{
+            "security": [{
+              "bearerAuth":[]
+            }],
+            "tags": ["blog API"],
+            "description": "Delete user by id",
+            "summary": "Delete user by id",
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "User Id"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Success Delete user",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "number",
+                          "example":200
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"OK"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":
+                            {
+                              "id":"47568467394683",
+                              "name":"Aditya",
+                              "user_name":"adit",
+                              "email":"adit@mail.com",
+                              "created_at":"2022-11-01T10:23:47.362Z"
+                            }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "404": {
+                "description": "User Not Found",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "type": "number",
+                          "example":404
+                        },
+                        "status":{
+                          "type": "string",
+                          "example":"NOT_FOUND"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":null        
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "500":{
+                "description": "Internal server error",
+                "content": {
+                  "application/json":{
+                    "schema":{
+                      "type": "object",
+                      "properties": {
+                        "code":{
+                          "example":500,
+                          "type": "integer",
+                          "format": "number"
+                        },
+                        "status":{
+                          "example":"INTERNAL_SERVER_ERROR",
+                          "type": "string",
+                          "format": "string"
+                        },
+                        "data":{
+                          "type": "object",
+                          "example":null
+                        }
+                      }
+                    }
+                  }
+                }
+              } 
+            }
+          }
+        },
+        "/login":{
+          "post":{
+            "security": [{
+              "bearerAuth":[]
+            }],
+            "tags": ["blog API"],
+            "description": "Login User",
+            "summary": "Login User",
+            "parameters": [],
+            "requestBody":{
+              "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "email":{
+                      "type": "string",
+                      "example":"admin@mail.com",
+                      "description": "Email User"
+                    },
+                    "password":{
+                      "type": "string",
+                      "example":"admin",
+                      "description": "Password User"
+                    }
+                  },
+                  "required": ["email","password"]
+                }
+              }
+              }
+            },"responses": {
+            "200":{
+              "description": "Succes Login",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "example":200,
+                        "type": "integer",
+                        "format": "number"
+                      },
+                      "status":{
+                        "example":"OK",
+                        "type": "string",
+                        "format": "string"
+                      },
+                      "data":{
+                        "type": "object",
+                        "example":{
+                          "id":"47568467394683",
+                          "name":"Aditya",
+                          "user_name":"adit",
+                          "email":"adit@mail.com",
+                          "created_at":"2022-11-01T10:23:47.362Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400":{
+              "description": "Validasi",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "type": "integer",
+                        "example":400
+                      },
+                      "status":{
+                        "type": "string",
+                        "example":"BAD_REQUEST"
+                      },
+                      "data":{
+                        "type": "array",
+                        "example":[
+                          {
+                            "field":"UserName",
+                            "message":"This field is required"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500":{
+              "description": "Internal server error",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "example":500,
+                        "type": "integer",
+                        "format": "number"
+                      },
+                      "status":{
+                        "example":"INTERNAL_SERVER_ERROR",
+                        "type": "string",
+                        "format": "string"
+                      },
+                      "data":{
+                        "type": "object",
+                        "example":null
+                      }
+                    }
+                  }
+                }
+              }
+            } 
+            }
+          }
+        },
+        "/articles":{
+          "post":{
+            "security": [{
+              "bearerAuth":[]
+            }],
+            "tags": ["Articles API"],
+            "description": "Create Article",
+            "summary": "Create Article",
+            "parameters": [],
+            "requestBody":{
+              "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "title":{
+                      "type": "string",
+                      "example":"lorem ipsum",
+                      "description": "Title Article"
+                    },
+                    "Description":{
+                      "type": "string",
+                      "example":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                      "description": "" 
+                    }
+                  },
+                  "required": ["title","description"]
+                }
+              }
+              }
+            },"responses": {
+            "200":{
+              "description": "Succes",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "example":200,
+                        "type": "integer",
+                        "format": "number"
+                      },
+                      "status":{
+                        "example":"OK",
+                        "type": "string",
+                        "format": "string"
+                      },
+                      "data":{
+                        "type": "object",
+                        "example":{
+                          "id":"47568467394683",
+                          "title":"lorem ipsum",
+                          "description":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                          "created_at":"2022-11-01T10:23:47.362Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400":{
+              "description": "Validasi",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "type": "integer",
+                        "example":400
+                      },
+                      "status":{
+                        "type": "string",
+                        "example":"BAD_REQUEST"
+                      },
+                      "data":{
+                        "type": "array",
+                        "example":[
+                          {
+                            "field":"title",
+                            "message":"This field is required"
+                          },
+                          {
+                            "field":"description",
+                            "message":"This field is required"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500":{
+              "description": "Internal server error",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "example":500,
+                        "type": "integer",
+                        "format": "number"
+                      },
+                      "status":{
+                        "example":"INTERNAL_SERVER_ERROR",
+                        "type": "string",
+                        "format": "string"
+                      },
+                      "data":{
+                        "type": "object",
+                        "example":null
+                      }
+                    }
+                  }
+                }
+              }
+            } 
+            }
+          }
+        },
+        "/articles/user":{
+          "get":{
+            "security": [{
+              "bearerAuth":[]
+            }],
+            "tags": ["Articles API"],
+            "description": "Get Article By Auth User",
+            "summary": "Get Article By Auth User",
+            "parameters": [],
+            "requestBody":{},
+            "responses": {
+            "200":{
+              "description": "Succes",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "example":200,
+                        "type": "integer",
+                        "format": "number"
+                      },
+                      "status":{
+                        "example":"OK",
+                        "type": "string",
+                        "format": "string"
+                      },
+                      "data":{
+                        "type": "array",
+                        "example":[
+                          {
+                            "id":"47568467394683",
+                            "author_name":"Aditya",
+                            "title":"lorem ipsum",
+                            "description":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                            "created_at":"2022-11-01T10:23:47.362Z"
+                          },
+                          {
+                            "id":"47568467394683",
+                            "author_name":"Aditya",
+                            "title":"lorem ipsum",
+                            "description":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                            "created_at":"2022-11-01T10:23:47.362Z"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400":{
+              "description": "Validasi",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "type": "integer",
+                        "example":400
+                      },
+                      "status":{
+                        "type": "string",
+                        "example":"BAD_REQUEST"
+                      },
+                      "data":{
+                        "type": "array",
+                        "example":[
+                          {
+                            "field":"title",
+                            "message":"This field is required"
+                          },
+                          {
+                            "field":"description",
+                            "message":"This field is required"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500":{
+              "description": "Internal server error",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "code":{
+                        "example":500,
+                        "type": "integer",
+                        "format": "number"
+                      },
+                      "status":{
+                        "example":"INTERNAL_SERVER_ERROR",
+                        "type": "string",
+                        "format": "string"
+                      },
+                      "data":{
+                        "type": "object",
+                        "example":null
+                      }
+                    }
+                  }
+                }
+              }
+            } 
+            }
+          }
+        }
+    },
+    "components": {
+      "securitySchemes": {
+        "bearerAuth":{
+          "type":"http",
+          "scheme": "bearer",
+          "in":"header",
+          "bearerFormat": "JWT",
+          "name":"Bearer-KEY",
+          "description":"Authentication for API"
+        }
+      },
+      "schemas": {
+        "CreateOrUpdateCategory":{
+          "type": "object",
+          "properties": {
+            "name":{
+              "type": "string"
+            }
+          }
+        },
+        "Category":{
+          "type": "object",
+          "properties": {
+            "id":{
+              "type": "number"
+            },
+            "name":{
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
