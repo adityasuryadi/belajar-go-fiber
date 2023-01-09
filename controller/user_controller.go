@@ -186,9 +186,7 @@ func (controller *UserController) OAuthCallback(ctx *fiber.Ctx) error {
 		exception.PanicIfNeeded(err)
 	}
 	client := config.GetClient(token.AccessToken)
-	// email := "bacotphobia@gmail.com"
 	jwtToken, errorCode := controller.UserService.FindOrCreateUser(client, provider)
-
 	var data = map[string]string{"token": ""}
 	if errorCode == "404" {
 		model.NotFoundResponse(ctx, nil)

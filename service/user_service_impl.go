@@ -178,12 +178,10 @@ func (service *UserServiceImpl) FindOrCreateUser(client model.GoogleResponse, pr
 	}
 
 	token, errToken = utils.ClaimToken(user.Email)
-	if err == "nil" {
-		if errToken != nil {
-			errorCode <- "500"
-		} else {
-			errorCode <- "nil"
-		}
+	if errToken != nil {
+		errorCode <- "500"
+	} else {
+		errorCode <- "nil"
 	}
 	return token, <-errorCode
 }
