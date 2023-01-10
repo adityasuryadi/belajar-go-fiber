@@ -5,6 +5,8 @@ import (
 	"go-blog/exception"
 	"go-blog/model"
 	"go-blog/service"
+	"reflect"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -50,10 +52,20 @@ func (controller *UserController) List(ctx *fiber.Ctx) error {
 
 func (controller *UserController) Create(ctx *fiber.Ctx) error {
 	validate := validator.New()
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+		// skip if tag key says it should be ignored
+		if name == "-" {
+			return ""
+		}
+		return name
+	})
+
 	var request model.UserCreateRequest
 	err := ctx.BodyParser(&request)
 	exception.PanicIfNeeded(err)
 	err = validate.Struct(&request)
+
 	if err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 
