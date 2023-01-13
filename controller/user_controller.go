@@ -3,10 +3,10 @@ package controller
 import (
 	"go-blog/config"
 	"go-blog/exception"
+	helpers "go-blog/helper"
+	"go-blog/middleware"
 	"go-blog/model"
 	"go-blog/service"
-	"reflect"
-	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -26,16 +26,17 @@ func (controller *UserController) Route(app *fiber.App) {
 
 	api.Post("/login", controller.Login)
 
-	// api.Use(middleware.Verify())
+	api.Post("/users", controller.Create)
+
+	api.Use(middleware.Verify())
 	api.Get("/users", controller.List)
 	api.Get("/test", controller.restricted)
-	api.Post("/users", controller.Create)
 	api.Put("/users/:id", controller.Edit)
 	api.Get("/users/:id", controller.Find)
 	api.Delete("/users/:id", controller.Delete)
 
 	// sign in google
-	api.Get("/signin", controller.LoginOauth)
+	app.Get("/signin", controller.LoginOauth)
 	// api.Get(("/signup"))
 
 	app.Get("/auth/:provider/callback", controller.OAuthCallback)
@@ -51,15 +52,7 @@ func (controller *UserController) List(ctx *fiber.Ctx) error {
 }
 
 func (controller *UserController) Create(ctx *fiber.Ctx) error {
-	validate := validator.New()
-	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
-		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
-		// skip if tag key says it should be ignored
-		if name == "-" {
-			return ""
-		}
-		return name
-	})
+	validate := helpers.NewCustomValidator()
 
 	var request model.UserCreateRequest
 	err := ctx.BodyParser(&request)

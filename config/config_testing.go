@@ -22,7 +22,7 @@ func NewTestPostgresDB(configuration Config) *gorm.DB {
 	user := "postgres"
 	password := "postgres"
 	port := "5433"
-	db_name := "blog"
+	db_name := "blog_test"
 
 	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + db_name + " port=" + port + " sslmode=disable TimeZone=UTC"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

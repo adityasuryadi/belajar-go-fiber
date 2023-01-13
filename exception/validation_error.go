@@ -18,13 +18,13 @@ type ErrorMessage struct {
 func GetErrorMsg(fe validator.FieldError) string {
 	switch fe.Tag() {
 	case "required":
-		return "This field is required"
+		return "field tidak boleh kosong"
 	case "lte":
-		return "Should be less than " + fe.Param()
+		return "harus lebih kecil dari " + fe.Param()
 	case "gte":
-		return "Should be greater than " + fe.Param()
+		return "harus lebih besar dari " + fe.Param()
 	case "email":
-		return "email incorrect"
+		return "format email salah"
 	}
 	return "Unknown error"
 }
