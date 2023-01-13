@@ -18,6 +18,9 @@ import (
 
 var jwtToken string
 
+// var userId string
+var userId string = "5485a216-6a3a-42c2-bb5a-0b6793cc9c02"
+
 func TestCreateUser(t *testing.T) {
 	app := fiber.New(config.NewFiberConfig())
 	userController := Setup()
@@ -268,6 +271,100 @@ func TestGestListUsersSuccess(t *testing.T) {
 	assert.Equal(t, 200, res.StatusCode)
 	assert.Equal(t, "OK", parse["status"])
 	assert.Equal(t, float64(200), parse["code"])
+}
+
+/*
+* Get User By Id
+ */
+
+func TestGetUserByIdSuccess(t *testing.T) {
+	app := fiber.New(config.NewFiberConfig())
+	userController := Setup()
+	userController.Route(app)
+
+	request := httptest.NewRequest(http.MethodGet, "/api/users/b2b029d2-8b44-4b42-94f1-32811caa1ffc", nil)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", "Bearer "+jwtToken)
+	res, _ := app.Test(request)
+	body, _ := ioutil.ReadAll(res.Body)
+
+	response := make(map[string]interface{})
+	json.Unmarshal(body, &response)
+	parse := response
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Equal(t, "OK", parse["status"])
+	assert.Equal(t, float64(200), parse["code"])
+}
+
+func TestGetUserByIdNotFound(t *testing.T) {
+	app := fiber.New(config.NewFiberConfig())
+	userController := Setup()
+	userController.Route(app)
+
+	request := httptest.NewRequest(http.MethodGet, "/api/users/b2b029d2-8b44-4b42-94f1-32811caa1ffd", nil)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", "Bearer "+jwtToken)
+	res, _ := app.Test(request)
+	body, _ := ioutil.ReadAll(res.Body)
+
+	response := make(map[string]interface{})
+	json.Unmarshal(body, &response)
+	parse := response
+	assert.Equal(t, 404, res.StatusCode)
+	assert.Equal(t, "NOT_FOUND", parse["status"])
+	assert.Equal(t, float64(404), parse["code"])
+}
+
+func TestGetUserUnAuthorized(t *testing.T) {
+	app := fiber.New(config.NewFiberConfig())
+	userController := Setup()
+	userController.Route(app)
+
+	request := httptest.NewRequest(http.MethodGet, "/api/users/b2b029d2-8b44-4b42-94f1-32811caa1ffd", nil)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", "Bearer 123")
+	res, _ := app.Test(request)
+	body, _ := ioutil.ReadAll(res.Body)
+
+	response := make(map[string]interface{})
+	json.Unmarshal(body, &response)
+	parse := response
+	assert.Equal(t, 401, res.StatusCode)
+	assert.Equal(t, "UNAUTHORIZE", parse["status"])
+	assert.Equal(t, float64(401), parse["code"])
+}
+
+/*
+* Test Update User
+*
+ */
+
+func TestUpdateUserSuccess(t *testing.T) {
+	app := fiber.New(config.NewFiberConfig())
+	userController := Setup()
+	userController.Route(app)
+
+	payload := strings.NewReader(`{
+		"name": "Aditya Suryadi",
+		"address": "Jl MOh Toha"
+	  }`)
+
+	request := httptest.NewRequest(http.MethodPut, "/api/users/"+userId, payload)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", "Bearer "+jwtToken)
+	res, _ := app.Test(request)
+	body, _ := ioutil.ReadAll(res.Body)
+
+	response := make(map[string]interface{})
+	json.Unmarshal(body, &response)
+	data := response["data"].(map[string]interface{})
+	parse := response
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Equal(t, "OK", parse["status"])
+	assert.Equal(t, float64(200), parse["code"])
+	assert.Equal(t, data["name"], "Aditya Suryadi")
+	assert.Equal(t, data["email"], "adit@mail.com")
+	assert.Equal(t, data["address"], "Jl MOh Toha")
 }
 
 func Setup() controller.UserController {

@@ -42,16 +42,20 @@ func (repository *UserRepositoryImpl) GetAll() (users []entity.User) {
 	return users
 }
 
-func (repository *UserRepositoryImpl) Update(id string, user entity.User) {
+func (repository *UserRepositoryImpl) Update(id string, user entity.User) (userEntity entity.User, errorCode string) {
 	var entityUser entity.User
 	checkedUser := repository.db.First(&entityUser, "id = ?", id)
 	if checkedUser.RowsAffected < 1 {
 		return
 	}
-	exception.PanicIfNeeded(checkedUser.Error)
 	entityUser.Name = user.Name
 	entityUser.Address = user.Address
 	repository.db.Save(&entityUser)
+
+	if checkedUser.Error != nil || errors.Is(checkedUser.Error, gorm.ErrRecordNotFound) {
+		return entityUser, "404"
+	}
+	return entityUser, "nil"
 
 }
 
@@ -83,9 +87,7 @@ func (repository *UserRepositoryImpl) Auth(user entity.User) (entity.User, error
 	if err != nil {
 		return entity.User{}, err
 	}
-
 	return userEntity, nil
-
 }
 
 func (repository *UserRepositoryImpl) FindUserBySlug(slug string, value interface{}) (user entity.User, errCode string) {

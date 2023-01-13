@@ -64,13 +64,13 @@ func (service *UserServiceImpl) Edit(id string, request model.UserUpdateRequest)
 		Name:    request.Name,
 		Address: request.Address,
 	}
-	service.UserRepository.Update(id, user)
+	userEntity, _ := service.UserRepository.Update(id, user)
 	response := model.UserResponse{
-		Name:      user.Name,
-		Email:     user.Email,
-		UserName:  user.UserName,
-		Address:   user.Address,
-		CreatedAt: user.CreatedAt,
+		Name:      userEntity.Name,
+		Email:     userEntity.Email,
+		UserName:  userEntity.UserName,
+		Address:   userEntity.Address,
+		CreatedAt: userEntity.CreatedAt,
 	}
 	return response
 }
