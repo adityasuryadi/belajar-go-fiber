@@ -321,7 +321,7 @@
           },
           "put":{
             "security": [{
-              "CategoryAuth":[]
+              "bearerAuth":[]
             }],
             "tags": ["blog API"],
             "description": "Edit user by id",
