@@ -1,8 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 	"go-blog/entity"
+	"go-blog/exception"
 	helpers "go-blog/helper"
 	"go-blog/model"
 	"go-blog/repository"
@@ -11,16 +13,30 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewUserService(repository repository.UserRepository, socialAccountRepository repository.SocialAccountRepository) UserService {
+func NewUserService(repository repository.UserRepository, socialAccountRepository repository.SocialAccountRepository, rabbitMqService RabbitMqService) UserService {
 	return &UserServiceImpl{
 		UserRepository:          repository,
 		SocialAccountRepository: socialAccountRepository,
+		RabbitMqService:         rabbitMqService,
 	}
 }
 
 type UserServiceImpl struct {
 	UserRepository          repository.UserRepository
 	SocialAccountRepository repository.SocialAccountRepository
+	RabbitMqService         RabbitMqService
+}
+
+// Test implements UserService
+func (service *UserServiceImpl) SendEmailActivation() {
+	data := make(map[string]interface{})
+	data["email"] = "aadit@mail.com"
+	data["name"] = "Aditya"
+	data["link"] = "http://test.com/123241"
+
+	body, err := json.Marshal(data)
+	exception.PanicIfNeeded(err)
+	service.RabbitMqService.PublishQueue("SendEmailActivation", body)
 }
 
 // List implements UserService
@@ -98,10 +114,8 @@ func (service *UserServiceImpl) Find(id string) (model.UserResponse, string) {
 
 func (service *UserServiceImpl) Delete(id string) string {
 	errorCode := make(chan string, 1)
-	result, err := service.UserRepository.Destroy(id)
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		errorCode <- "500"
-	} else if result == 0 && errors.Is(err, gorm.ErrRecordNotFound) {
+	err := service.UserRepository.Destroy(id)
+	if err == "404" {
 		errorCode <- "404"
 	} else {
 		errorCode <- "200"

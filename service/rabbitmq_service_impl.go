@@ -42,7 +42,7 @@ func (service *RabbitMqServiceImpl) PublishQueue(queueName string, data interfac
 		false,
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        []byte(queueName),
+			Body:        []byte(data.(string)),
 		},
 	)
 

@@ -14,4 +14,5 @@ type UserService interface {
 	LoginOAuth(request model.UserLoginRequest)
 	OAuthCallback(email string, provider string)
 	FindOrCreateUser(client model.GoogleResponse, provider string) (jwtToken, errorCode string)
+	SendEmailActivation()
 }

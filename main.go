@@ -2,13 +2,10 @@ package main
 
 import (
 	"go-blog/config"
-	"go-blog/exception"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func NewApp() *fiber.App {
@@ -45,49 +42,56 @@ func main() {
 	// route untuk test rabbitmq
 
 	// koneksi ke rabbitmq
-	connRabbitMq, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
-	if err != nil {
-		log.Fatalf("%s: %s", "failed to connect rabbitMQ", err)
-	}
+	// connRabbitMq, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
+	// if err != nil {
+	// 	log.Fatalf("%s: %s", "failed to connect rabbitMQ", err)
+	// }
 
-	app.Get("/send", func(c *fiber.Ctx) error {
-		if c.Query("msg") == "" {
-			log.Println("Missing 'msq' query parameter")
-		}
+	// app.Get("/send", func(c *fiber.Ctx) error {
+	// 	if c.Query("msg") == "" {
+	// 		log.Println("Missing 'msq' query parameter")
+	// 	}
 
-		// buka koneksi ke rabbitmq
-		ch, err := connRabbitMq.Channel()
-		exception.PanicIfNeeded(err)
-		defer ch.Close()
+	// 	// buka koneksi ke rabbitmq
+	// 	ch, err := connRabbitMq.Channel()
+	// 	exception.PanicIfNeeded(err)
+	// 	defer ch.Close()
 
-		// deklarasi queue yang akan di publish dan di subscribe
+	// 	// deklarasi queue yang akan di publish dan di subscribe
 
-		_, err = ch.QueueDeclare(
-			"TestQueue", //nama
-			false,       //durable
-			false,       //delete when unused
-			false,       //exclusive
-			false,       // no-wait
-			nil,         //arguments
-		)
+	// 	_, err = ch.QueueDeclare(
+	// 		"TestQueue", //nama
+	// 		false,       //durable
+	// 		false,       //delete when unused
+	// 		false,       //exclusive
+	// 		false,       // no-wait
+	// 		nil,         //arguments
+	// 	)
 
-		exception.PanicIfNeeded(err)
+	// 	exception.PanicIfNeeded(err)
 
-		err = ch.Publish(
-			"",
-			"TestQueue",
-			false,
-			false,
-			amqp.Publishing{
-				ContentType: "text/plain",
-				Body:        []byte(c.Query("msg")),
-			},
-		)
+	// 	dt := make(map[string]interface{})
 
-		exception.PanicIfNeeded(err)
+	// 	dt["name"] = "Adit"
+	// 	dt["user_name"] = "adit33"
+	// 	dt["email"] = "adit@mail.com"
+	// 	body, err := json.Marshal(dt)
 
-		return nil
-	})
+	// 	err = ch.Publish(
+	// 		"",
+	// 		"TestQueue",
+	// 		false,
+	// 		false,
+	// 		amqp.Publishing{
+	// 			ContentType: "text/plain",
+	// 			Body:        []byte(body),
+	// 		},
+	// 	)
+
+	// 	exception.PanicIfNeeded(err)
+
+	// 	return nil
+	// })
 
 	app.Listen(":3001")
 }

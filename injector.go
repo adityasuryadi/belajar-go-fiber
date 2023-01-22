@@ -50,6 +50,8 @@ func InitializedUserController(filenames ...string) controller.UserController {
 	wire.Build(
 		config.New,
 		config.NewPostgresDB,
+		config.NewRabbitmqConn,
+		service.NewRabbitMqService,
 		// repository.NewUserRepository,
 		// service.NewUserService,
 		userSet,

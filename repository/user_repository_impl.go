@@ -65,14 +65,14 @@ func (repository *UserRepositoryImpl) Get(id string) (user entity.User, err erro
 	return entityUser, result.Error
 }
 
-func (repository *UserRepositoryImpl) Destroy(id string) (result int64, err error) {
+func (repository *UserRepositoryImpl) Destroy(id string) (errorCode string) {
 	var user entity.User
 	db := repository.db.Where("id = ?", id).First(&user)
 	if errors.Is(db.Error, gorm.ErrRecordNotFound) {
-		return 0, db.Error
+		return "404"
 	}
 	db.Delete(&user)
-	return 1, nil
+	return "nil"
 }
 
 func (repository *UserRepositoryImpl) Auth(user entity.User) (entity.User, error) {

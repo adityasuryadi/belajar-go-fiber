@@ -367,12 +367,50 @@ func TestUpdateUserSuccess(t *testing.T) {
 	assert.Equal(t, data["address"], "Jl MOh Toha")
 }
 
+func TestDeleteUserSuccess(t *testing.T) {
+	app := fiber.New(config.NewFiberConfig())
+	userController := Setup()
+	userController.Route(app)
+
+	request := httptest.NewRequest(http.MethodDelete, "/api/users/b2b029d2-8b44-4b42-94f1-32811caa1ffd", nil)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", "Bearer "+jwtToken)
+	res, _ := app.Test(request)
+	body, _ := ioutil.ReadAll(res.Body)
+
+	response := make(map[string]interface{})
+	json.Unmarshal(body, &response)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Equal(t, "OK", response["status"])
+	assert.Equal(t, nil, response["data"])
+}
+
+func TestDeleteUserNotFound(t *testing.T) {
+	app := fiber.New(config.NewFiberConfig())
+	userController := Setup()
+	userController.Route(app)
+
+	request := httptest.NewRequest(http.MethodDelete, "/api/users/b2b029d2-8b44-4b42-94f1-32811caa1ffz", nil)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", "Bearer "+jwtToken)
+	res, _ := app.Test(request)
+	body, _ := ioutil.ReadAll(res.Body)
+
+	response := make(map[string]interface{})
+	json.Unmarshal(body, &response)
+	assert.Equal(t, 404, res.StatusCode)
+	assert.Equal(t, "NOT_FOUND", response["status"])
+	assert.Equal(t, nil, response["data"])
+}
+
 func Setup() controller.UserController {
 	configConfig := config.New()
 	db := config.NewTestPostgresDB(configConfig)
+	rabbitmq := config.NewRabbitmqConn(configConfig)
 	userRepository := repository.NewUserRepository(db)
 	socialAccountRepository := repository.NewSocialAccountRepository(db)
-	userService := service.NewUserService(userRepository, socialAccountRepository)
+	rabbitmqService := service.NewRabbitMqService(rabbitmq)
+	userService := service.NewUserService(userRepository, socialAccountRepository, rabbitmqService)
 	userController := controller.NewUserController(userService)
 	return userController
 }

@@ -149,11 +149,6 @@ func (controller *UserController) Delete(ctx *fiber.Ctx) error {
 func (controller *UserController) Login(ctx *fiber.Ctx) error {
 	var request model.UserLoginRequest
 
-	// user := ctx.Locals("user").(*jwt.Token)
-	// claims := user.Claims.(jwt.MapClaims)
-	// email := claims["email"].(string)
-	// return email
-
 	err := ctx.BodyParser(&request)
 	if err != nil {
 		exception.PanicIfNeeded(err)

@@ -22,7 +22,9 @@ func InitializedUserController(filenames ...string) controller.UserController {
 	db := config.NewPostgresDB(configConfig)
 	userRepository := repository.NewUserRepository(db)
 	socialAccountRepository := repository.NewSocialAccountRepository(db)
-	userService := service.NewUserService(userRepository, socialAccountRepository)
+	connection := config.NewRabbitmqConn(configConfig)
+	rabbitMqService := service.NewRabbitMqService(connection)
+	userService := service.NewUserService(userRepository, socialAccountRepository, rabbitMqService)
 	userController := controller.NewUserController(userService)
 	return userController
 }
